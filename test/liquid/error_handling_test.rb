@@ -78,4 +78,69 @@ class ErrorHandlingTest < Test::Unit::TestCase
       template.render('errors' => ErrorDrop.new)
     end
   end
+
+  def test_line_count_when_syntax_error_is_thrown
+    assert_failure_on_line 1, <<EOF
+{% if oops
+EOF
+
+    assert_failure_on_line 2, <<EOF
+
+{% if oops
+EOF
+
+    assert_failure_on_line 3, <<EOF
+
+
+{% if oops
+EOF
+
+    assert_failure_on_line 2, <<EOF
+
+{% if oopzzzz
+
+{% if oops
+EOF
+
+    assert_failure_on_line 2, <<EOF
+
+{% if oopzzzz
+
+{% if oops
+EOF
+
+    assert_failure_on_line 4, <<EOF
+{% if this_is_totally_false %}
+  Hello World
+{% endif %}
+{% if failure 
+EOF
+
+    assert_failure_on_line 10, <<EOF
+{% if this_is_totally_false %}
+  Hello World
+{% endif %}
+
+
+
+
+
+
+{% if failure 
+EOF
+
+  end
+
+  private
+
+  def assert_failure_on_line(num, markup)
+    begin 
+      Liquid::Template.parse(markup)
+    rescue Liquid::SyntaxError => error
+    end
+
+    assert_equal num, error.liquid_line_number
+  end
+
+
 end # ErrorHandlingTest

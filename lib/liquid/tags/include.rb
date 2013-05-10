@@ -14,7 +14,8 @@ module Liquid
         end
 
       else
-        raise SyntaxError.new("Error in tag 'include' - Valid syntax: include '[template]' (with|for) [object|collection]")
+        message = "Error in tag 'include' - Valid syntax: include '[template]' (with|for) [object|collection]"
+        raise SyntaxError.new(message, tokens.next_token)
       end
 
       super

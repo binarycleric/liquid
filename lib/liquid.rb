@@ -42,7 +42,7 @@ module Liquid
   TagAttributes               = /(#{WordRegex}+)\s*\:\s*(#{QuotedFragment})/o
   AnyStartingTag              = /\{\{|\{\%/
   PartialTemplateParser       = /#{TagStart}.*?#{TagEnd}|#{VariableStart}.*?#{VariableIncompleteEnd}/o
-  TemplateParser              = /(#{PartialTemplateParser}|#{AnyStartingTag})/o
+  TemplateParser              = /(#{PartialTemplateParser}|#{AnyStartingTag}|\r\n|\n|\r)/o
   VariableParser              = /\[[^\]]+\]|#{VariableSegment}+\??/o
 end
 
@@ -57,6 +57,7 @@ require 'liquid/block'
 require 'liquid/document'
 require 'liquid/variable'
 require 'liquid/file_system'
+require 'liquid/token_list'
 require 'liquid/template'
 require 'liquid/htmltags'
 require 'liquid/standardfilters'

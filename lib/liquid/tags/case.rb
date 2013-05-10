@@ -9,7 +9,8 @@ module Liquid
       if markup =~ Syntax
         @left = $1
       else
-        raise SyntaxError.new("Syntax Error in tag 'case' - Valid syntax: case [condition]")
+        message = "Syntax Error in tag 'case' - Valid syntax: case [condition]"
+        raise SyntaxError.new(message, tokens.next_token)
       end
             
       super
@@ -19,9 +20,9 @@ module Liquid
       @nodelist = []
       case tag
       when 'when'
-        record_when_condition(markup)
+        record_when_condition(markup, tokens)
       when 'else'
-        record_else_condition(markup)
+        record_else_condition(markup, tokens)
       else
         super
       end
@@ -46,11 +47,12 @@ module Liquid
     
     private
     
-    def record_when_condition(markup)                
+    def record_when_condition(markup, tokens)                
       while markup
       	# Create a new nodelist and assign it to the new block
       	if not markup =~ WhenSyntax
-      	  raise SyntaxError.new("Syntax Error in tag 'case' - Valid when condition: {% when [condition] [or condition2...] %} ")
+          message = "Syntax Error in tag 'case' - Valid when condition: {% when [condition] [or condition2...] %} "
+      	  raise SyntaxError.new(message, tokens.next_token)
       	end
 
       	markup = $2
@@ -61,10 +63,11 @@ module Liquid
       end
     end
 
-    def record_else_condition(markup)            
+    def record_else_condition(markup, tokens)            
 
       if not markup.strip.empty?
-        raise SyntaxError.new("Syntax Error in tag 'case' - Valid else condition: {% else %} (no parameters) ")
+        message = "Syntax Error in tag 'case' - Valid else condition: {% else %} (no parameters) "
+        raise SyntaxError.new(message, tokens.next_token)
       end
          
       block = ElseCondition.new            

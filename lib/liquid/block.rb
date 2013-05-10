@@ -10,7 +10,7 @@ module Liquid
       @nodelist ||= []
       @nodelist.clear
 
-      while token = tokens.shift
+      while token = tokens.next_token!
 
         case token
         when IsTag
@@ -32,14 +32,16 @@ module Liquid
               unknown_tag($1, $2, tokens)
             end
           else
-            raise SyntaxError, "Tag '#{token}' was not properly terminated with regexp: #{TagEnd.inspect} "
+            message = "Tag '#{token}' was not properly terminated with regexp: #{TagEnd.inspect} "
+            raise SyntaxError.new(message, token)
           end
         when IsVariable
           @nodelist << create_variable(token)
         when ''
           # pass
         else
-          @nodelist << token
+          # token is a Liquid::Token. At this point we can just cast to string.
+          @nodelist << token.to_s
         end
       end
 
@@ -55,12 +57,14 @@ module Liquid
     def unknown_tag(tag, params, tokens)
       case tag
       when 'else'
-        raise SyntaxError, "#{block_name} tag does not expect else tag"
+        message = "#{block_name} tag does not expect else tag", tokens.next_token
       when 'end'
-        raise SyntaxError, "'end' is not a valid delimiter for #{block_name} tags. use #{block_delimiter}"
+        message = "'end' is not a valid delimiter for #{block_name} tags. use #{block_delimiter}"
       else
-        raise SyntaxError, "Unknown tag '#{tag}'"
+        message = "Unknown tag '#{tag}'" 
       end
+
+      raise SyntaxError.new(message, tokens.next_token)
     end
 
     def block_delimiter
@@ -75,7 +79,9 @@ module Liquid
       token.scan(ContentOfVariable) do |content|
         return Variable.new(content.first)
       end
-      raise SyntaxError.new("Variable '#{token}' was not properly terminated with regexp: #{VariableEnd.inspect} ")
+
+      message = "Variable '#{token}' was not properly terminated with regexp: #{VariableEnd.inspect} "
+      raise SyntaxError.new(message, token)
     end
 
     def render(context)
