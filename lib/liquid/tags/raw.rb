@@ -4,7 +4,7 @@ module Liquid
       @nodelist ||= []
       @nodelist.clear
 
-      while token = tokens.shift
+      while token = tokens.next_token!
         if token =~ FullToken
           if block_delimiter == $1
             end_tag

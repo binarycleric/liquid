@@ -37,12 +37,6 @@ module Liquid
       @tokens.first
     end
 
-    ##
-    # Alias for #next_token!
-    def shift
-      next_token!
-    end
-
     def empty?
       @tokens.empty?
     end
