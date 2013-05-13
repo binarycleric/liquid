@@ -19,8 +19,6 @@ module Liquid
   # when they make a mistake.
   class TokenList
 
-    attr_reader :line_number
-
     def initialize(source)
       source = source.source if source.respond_to?(:source)
       # @source = source
@@ -59,8 +57,9 @@ module Liquid
       # removes the rogue empty element at the beginning of the array
       tokens.shift if tokens[0] and tokens[0].empty?
 
+      line_number = 1
       tokens.each_with_index.map do |raw, i|
-        line_number = tokens[0..i].join("").scan(/\r\n|\n|\r/).size +  1
+        line_number += raw.scan(/\r\n|\n|\r/).size
         Token.new(raw, line_number)
       end
     end
