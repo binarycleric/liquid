@@ -18,7 +18,7 @@ class Paginate < Liquid::Block
       end        
     else
       message = "Syntax Error in tag 'paginate' - Valid syntax: paginate [collection] by number"
-      raise SyntaxError.new(message, tokens.next_token)
+      raise SyntaxError.new(message, tokens)
     end
   
     super

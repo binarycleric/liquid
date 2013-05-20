@@ -7,7 +7,7 @@ class CommentForm < Liquid::Block
       @attributes = {}
     else
       message = "Syntax Error in 'comment_form' - Valid syntax: comment_form [article]"
-      raise SyntaxError.new(message, tokens.next_token)
+      raise SyntaxError.new(message, tokens)
     end
     
     super

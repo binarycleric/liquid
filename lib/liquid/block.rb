@@ -33,10 +33,10 @@ module Liquid
             end
           else
             message = "Tag '#{token}' was not properly terminated with regexp: #{TagEnd.inspect} "
-            raise SyntaxError.new(message, token)
+            raise SyntaxError.new(message, tokens)
           end
         when IsVariable
-          @nodelist << create_variable(token)
+          @nodelist << create_variable(token, tokens)
         when ''
           # pass
         else
@@ -48,7 +48,7 @@ module Liquid
       # Make sure that its ok to end parsing in the current block.
       # Effectively this method will throw and exception unless the current block is
       # of type Document
-      assert_missing_delimitation!
+      assert_missing_delimitation!(tokens)
     end
 
     def end_tag
@@ -64,7 +64,7 @@ module Liquid
         message = "Unknown tag '#{tag}'" 
       end
 
-      raise SyntaxError.new(message, tokens.next_token)
+      raise SyntaxError.new(message, tokens)
     end
 
     def block_delimiter
@@ -75,13 +75,16 @@ module Liquid
       @tag_name
     end
 
-    def create_variable(token)
+    ##
+    # Not a fan of having to pass in both token and tokens here but it's
+    # required to raise the SyntaxError.
+    def create_variable(token, tokens)
       token.scan(ContentOfVariable) do |content|
         return Variable.new(content.first)
       end
 
       message = "Variable '#{token}' was not properly terminated with regexp: #{VariableEnd.inspect} "
-      raise SyntaxError.new(message, token)
+      raise SyntaxError.new(message, tokens)
     end
 
     def render(context)
@@ -90,8 +93,8 @@ module Liquid
 
     protected
 
-    def assert_missing_delimitation!
-      raise SyntaxError.new("#{block_name} tag was never closed")
+    def assert_missing_delimitation!(tokens)
+      raise SyntaxError.new("#{block_name} tag was never closed", tokens)
     end
 
     def render_all(list, context)

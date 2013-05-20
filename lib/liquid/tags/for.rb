@@ -58,7 +58,7 @@ module Liquid
         end        
       else
         message = "Syntax Error in 'for loop' - Valid syntax: for [item] in [collection]"
-        raise SyntaxError.new(message, tokens.next_token)
+        raise SyntaxError.new(message, tokens)
       end
 
       @nodelist = @for_block = []

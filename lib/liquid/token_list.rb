@@ -1,18 +1,5 @@
 module Liquid
 
-  class Token < String
-
-    attr_reader :line_number
-
-    def initialize(token, line_number)
-      @token = token
-      @line_number = line_number
-
-      super(@token)
-    end
-
-  end
-
   ##
   # Tokenizer capable of determining the line number of the most recently
   # returned token. Can be useful for giving the user more meaningful feedback
@@ -22,23 +9,39 @@ module Liquid
     def initialize(source)
       source = source.source if source.respond_to?(:source)
       # @source = source
+      
+      @token_pointer = 0
       @tokens = tokenize(source)
     end
 
     ##
     # Gets the next token and removes it from the stack.
     def next_token!
-      @tokens.shift
+      token = @tokens[@token_pointer]
+      @token_pointer += 1
+      return token
     end
 
     ##
     # Gets the next token without removing it from the stack.
     def next_token
-      @tokens.first
+      @tokens[@token_pointer]
     end
 
+    ##
+    # Gets the line number of the last returned token.
+    def last_line_number
+      line_number = 1
+      @tokens[0..@token_pointer-1].each do |token, i|
+         line_number += token.scan(/\r\n|\n|\r/).size
+      end
+      return line_number
+    end
+
+    ##
+    # Assuming a nil value is the end of the token array.
     def empty?
-      @tokens.empty?
+      @tokens[@token_pointer].nil?
     end
 
     private
@@ -51,11 +54,7 @@ module Liquid
       # removes the rogue empty element at the beginning of the array
       tokens.shift if tokens[0] and tokens[0].empty?
 
-      line_number = 1
-      tokens.each_with_index.map do |raw, i|
-        line_number += raw.scan(/\r\n|\n|\r/).size
-        Token.new(raw, line_number)
-      end
+      return tokens
     end
 
   end

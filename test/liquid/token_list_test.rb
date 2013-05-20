@@ -54,7 +54,7 @@ EOF
 
     expected.each do |i|
       token = tokens.next_token!
-      assert_equal(i, token.line_number)
+      assert_equal(i, tokens.last_line_number)
     end
 
     assert tokens.empty?
@@ -72,7 +72,7 @@ EOF
 
     expected.each do |i|
       token = tokens.next_token!
-      assert_equal(i, token.line_number)
+      assert_equal(i, tokens.last_line_number)
     end
 
     assert tokens.empty?

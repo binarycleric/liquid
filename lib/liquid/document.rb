@@ -11,7 +11,7 @@ module Liquid
     end
 
     # Document blocks don't need to be terminated since they are not actually opened
-    def assert_missing_delimitation!
+    def assert_missing_delimitation!(tokens)
     end
   end
 end

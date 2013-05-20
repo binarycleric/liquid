@@ -12,7 +12,7 @@ module Liquid
         end
       else
         message = "Syntax Error in 'table_row loop' - Valid syntax: table_row [item] in [collection] cols=3"
-        raise SyntaxError.new(message, tokens.next_token)
+        raise SyntaxError.new(message, tokens)
       end
 
       super

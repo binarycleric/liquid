@@ -9,16 +9,20 @@ module Liquid
 
   class SyntaxError < Error
 
-    attr_reader :token
+    attr_reader :line_number
 
-    def initialize(msg, token=nil)
-      @token = token
+    def initialize(msg, tokens=nil) # line_number=nil)
+      if tokens
+        @line_number = tokens.last_line_number 
+        @tokens = tokens.dup
+      end
+
       super(msg)
     end
- 
+
+    # To not break prod (WebKite) ~Jon
     def liquid_line_number
-      return nil unless @token
-      return @token.line_number
+      @line_number
     end
 
   end

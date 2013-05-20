@@ -73,7 +73,7 @@ module Liquid
     end
 
     def raise_syntax_error!(tokens)
-      raise SyntaxError.new(SyntaxHelp, tokens.next_token)
+      raise SyntaxError.new(SyntaxHelp, tokens)
     end
 
   end

@@ -18,7 +18,8 @@ module Liquid
       if markup =~ Syntax
         @to = $1
       else
-        raise SyntaxError.new("Syntax Error in 'capture' - Valid syntax: capture [var]")
+        message = "Syntax Error in 'capture' - Valid syntax: capture [var]"
+        raise SyntaxError.new(message, tokens)
       end
 
       super

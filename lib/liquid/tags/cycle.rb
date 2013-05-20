@@ -26,7 +26,7 @@ module Liquid
       	@name = "'#{@variables.to_s}'"
       else
         message = "Syntax Error in 'cycle' - Valid syntax: cycle [name :] var [, var2, var3 ...]"
-        raise SyntaxError.new(message, tokens.next_token)
+        raise SyntaxError.new(message, tokens)
       end
       super    
     end    

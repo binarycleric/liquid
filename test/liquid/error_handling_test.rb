@@ -139,7 +139,7 @@ EOF
     rescue Liquid::SyntaxError => error
     end
 
-    assert_equal num, error.liquid_line_number
+    assert_equal num, error.line_number
   end
 
 

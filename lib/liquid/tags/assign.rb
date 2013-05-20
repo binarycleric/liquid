@@ -17,7 +17,7 @@ module Liquid
         @from = Variable.new($2)
       else
         message = "Syntax Error in 'assign' - Valid syntax: assign [var] = [source]"
-        raise SyntaxError.new(message, tokens.next_token)
+        raise SyntaxError.new(message, tokens)
       end
       
       super      
